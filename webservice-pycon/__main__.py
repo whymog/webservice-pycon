@@ -19,6 +19,17 @@ async def issue_opened_event(event, gh, *args, **kwargs):
 
     await gh.post(url, data={"body": message})
 
+async def pull_request_event(event, gh, *args, **kwargs):
+    """ Whenever a pull request is merged, tell the author thanks."""
+
+    url = event.data["pull_request"]["url"]
+
+    author = event.data["pull_request"]["user"]["login"]
+    message = f"Merged! Thanks for the pull request, @{author}!"
+
+    if event.data["pull_request"]["merged"] and event.data["action"] == "closed":
+        await gh.post(url, data={"body": message})
+
 async def main(request):
     # read the GitHub webhook payload
     body = await request.read()
