@@ -31,6 +31,14 @@ async def pull_request_event(event, gh, *args, **kwargs):
     if event.data["pull_request"]["merged"]:
         await gh.post(url, data={"body": message})
 
+@router.register("pull_request", action="created")
+async def pull_request_created(event, gh, *args, **kwargs):
+    """ Whenever a pull request is created, apply the 'pending review' label """
+
+    url = event.data["pull_request"]["url"]
+
+    await gh.patch(url, data={"labels": ["pending review"]})
+
 @router.register("issue_comment", action="created")
 async def issue_comment_event(event, gh, *args, **kwargs):
     """ Whenever I comment on an issue, give me an automatic thumbs-up."""
