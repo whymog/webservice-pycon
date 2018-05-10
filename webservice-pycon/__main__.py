@@ -31,9 +31,9 @@ async def pull_request_event(event, gh, *args, **kwargs):
     if event.data["pull_request"]["merged"]:
         await gh.post(url, data={"body": message})
 
-@router.register("pull_request_created", action="created")
+@router.register("pull_request", action="opened")
 async def pull_request_created(event, gh, *args, **kwargs):
-    """ Whenever a pull request is created, apply the 'pending review' label """
+    """ Whenever a pull request is opened, apply the 'pending review' label """
 
     url = event.data["pull_request"]["url"]
 
