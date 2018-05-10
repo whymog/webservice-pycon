@@ -35,7 +35,7 @@ async def pull_request_event(event, gh, *args, **kwargs):
 async def pull_request_created(event, gh, *args, **kwargs):
     """ Whenever a pull request is opened, apply the 'pending review' label """
 
-    url = event.data["pull_request"]["url"]
+    url = event.data["pull_request"]["issue_url"]
 
     await gh.patch(url, data={"labels": ["pending review"]})
 
