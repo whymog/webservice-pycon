@@ -31,6 +31,19 @@ async def pull_request_event(event, gh, *args, **kwargs):
     if event.data["pull_request"]["merged"]:
         await gh.post(url, data={"body": message})
 
+@router.register("issue_comment", action="created")
+async def issue_comment_event(event, gh, *args, **kwargs):
+    """ Whenever I comment on an issue, give me an automatic thumbs-up."""
+
+    url = event.data["comment"]["url"]
+    author = event.data["comment"]["user"]["login"]
+
+    if event.data["comment"]["user"]["login"] == "whymog":
+        await gh.post(url + "/reactions",
+            data={"content": "+1"},
+            accept='application/vnd.github.squirrel-girl-preview+json',
+        )
+
 async def main(request):
     # read the GitHub webhook payload
     body = await request.read()
